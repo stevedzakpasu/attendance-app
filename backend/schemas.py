@@ -14,6 +14,18 @@ class MemberCreate(SQLModel):
     committee: Optional[str]
 
 
+class MemberUpdate(SQLModel):
+    name: Optional[str] = None
+    phone_number: Optional[str] = None
+    hall: Optional[str] = None
+    room_number: Optional[str] = None
+    programme: Optional[str] = None
+    level: Optional[str] = None
+    DOB: Optional[str] = None
+    congregation: Optional[str] = None
+    committee: Optional[str] = None
+
+
 class MemberRead(MemberCreate):
     id: int
 
