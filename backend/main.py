@@ -56,3 +56,14 @@ def update_member(
     session.commit()
     session.refresh(db_member)
     return db_member
+
+
+@app.delete("/api/members/{member_id}")
+def delete_hero(*, session: Session = Depends(_services.get_session), member_id: int):
+
+    member = session.get(_models.Member, member_id)
+    if not member:
+        raise HTTPException(status_code=404, detail="Member not found")
+    session.delete(member)
+    session.commit()
+    return {"ok": True}
