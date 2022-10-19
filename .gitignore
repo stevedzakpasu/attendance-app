@@ -11,6 +11,6 @@ npm-debug.*
 web-build/
 *.env
 backend/venv
-# macOS
+backend/__pycache__
 .DS_Store
 *.vscode
