@@ -30,49 +30,13 @@ class MemberRead(MemberCreate):
     id: int
 
 
-class EventCreate(SQLModel):
+class InfoCreate(SQLModel):
     name: str
 
 
-class EventRead(EventCreate):
+class InfoRead(InfoCreate):
     id: int
 
 
-class HallCreate(SQLModel):
-    name: str
-
-
-class HallRead(HallCreate):
-    id: int
-
-
-class ProgrammeCreate(SQLModel):
-    name: str
-
-
-class ProgrammeRead(ProgrammeCreate):
-    id: int
-
-
-class LevelCreate(SQLModel):
-    name: str
-
-
-class LevelRead(LevelCreate):
-    id: int
-
-
-class CongregationCreate(SQLModel):
-    name: str
-
-
-class CongregationRead(CongregationCreate):
-    id: int
-
-
-class CommitteeCreate(SQLModel):
-    name: str
-
-
-class CommitteeRead(CommitteeCreate):
-    id: int
+class InfoUpdate(SQLModel):
+    name: Optional[str] = None
