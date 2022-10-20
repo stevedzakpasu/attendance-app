@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import List, Optional
 from sqlmodel import SQLModel
 
 
@@ -26,8 +26,28 @@ class MemberUpdate(SQLModel):
     committee: Optional[str] = None
 
 
+class EventCreate(SQLModel):
+    name: str
+
+
+class EventRead(EventCreate):
+    id: int
+
+
+class EventUpdate(SQLModel):
+    name: Optional[str] = None
+
+
 class MemberRead(MemberCreate):
     id: int
+
+
+class MemberReadWithEvents(MemberRead):
+    events_attended: List[EventRead] = []
+
+
+class EventReadWithMembers(EventRead):
+    members_attended: List[MemberRead] = []
 
 
 class InfoCreate(SQLModel):

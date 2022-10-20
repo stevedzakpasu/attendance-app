@@ -54,7 +54,7 @@ def create_member(*, session: Session = Depends(_services.get_session), member: 
     return db_member
 
 
-@ app.get("/api/members/",  tags=["members"], response_model=List[_schemas.MemberRead])
+@ app.get("/api/members/",  tags=["members"], response_model=List[_schemas.MemberReadWithEvents])
 def read_members(
     *,
     session: Session = Depends(_services.get_session),
@@ -66,7 +66,7 @@ def read_members(
     return members
 
 
-@app.get("/api/members/{member_id}",  tags=["members"], response_model=_schemas.MemberRead)
+@app.get("/api/members/{member_id}",  tags=["members"], response_model=_schemas.MemberReadWithEvents)
 def read_hero(*, session: Session = Depends(_services.get_session), member_id: int):
     member = session.get(_models.Member, member_id)
     if not member:
@@ -74,7 +74,7 @@ def read_hero(*, session: Session = Depends(_services.get_session), member_id: i
     return member
 
 
-@app.patch("/api/members/{member_id}",  tags=["members"], response_model=_schemas.MemberRead)
+@app.patch("/api/members/{member_id}",  tags=["members"], response_model=_schemas.MemberReadWithEvents)
 def update_member(
     *, session: Session = Depends(_services.get_session), member_id: int, member: _schemas.MemberUpdate
 ):
@@ -381,8 +381,8 @@ def delete_committee(*, session: Session = Depends(_services.get_session), commi
     return {"ok": True}
 
 
-@app.post("/api/events/", tags=["events"], response_model=_schemas.InfoCreate)
-def create_event(*, session: Session = Depends(_services.get_session), event: _schemas.InfoCreate):
+@app.post("/api/events/", tags=["events"], response_model=_schemas.EventCreate)
+def create_event(*, session: Session = Depends(_services.get_session), event: _schemas.EventCreate):
     db_event = _models.Congregation.from_orm(event)
     session.add(db_event)
     session.commit()
@@ -390,7 +390,7 @@ def create_event(*, session: Session = Depends(_services.get_session), event: _s
     return db_event
 
 
-@ app.get("/api/events/",  tags=["events"], response_model=List[_schemas.InfoRead])
+@ app.get("/api/events/",  tags=["events"], response_model=List[_schemas.EventReadWithMembers])
 def read_event(
     *,
     session: Session = Depends(_services.get_session),
@@ -402,7 +402,7 @@ def read_event(
     return events
 
 
-@app.get("/api/events/{event_id}",  tags=["events"], response_model=_schemas.InfoRead)
+@app.get("/api/events/{event_id}",  tags=["events"], response_model=_schemas.EventReadWithMembers)
 def read_events(*, session: Session = Depends(_services.get_session), event_id: int):
     event = session.get(_models.Congregation, event_id)
     if not event:
@@ -410,9 +410,9 @@ def read_events(*, session: Session = Depends(_services.get_session), event_id: 
     return event
 
 
-@app.patch("/api/events/{event_id}",  tags=["events"], response_model=_schemas.InfoRead)
+@app.patch("/api/events/{event_id}",  tags=["events"], response_model=_schemas.EventReadWithMembers)
 def update_event(
-    *, session: Session = Depends(_services.get_session), event_id: int, event: _schemas.InfoUpdate
+    *, session: Session = Depends(_services.get_session), event_id: int, event: _schemas.EventUpdate
 ):
     db_event = session.get(_models.Event, event_id)
     if not db_event:
