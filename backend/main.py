@@ -1,3 +1,4 @@
+import re
 from fastapi import FastAPI, Depends, Query, HTTPException
 from typing import List
 import services as _services
@@ -159,11 +160,11 @@ def delete_hall(*, session: Session = Depends(_services.get_session), hall_id: i
 
 @app.post("/api/programmes/", tags=["programmes"], response_model=_schemas.InfoCreate)
 def create_programme(*, session: Session = Depends(_services.get_session), programme: _schemas.InfoCreate):
-    db_programmme = _models.Programme.from_orm(programme)
-    session.add(db_programmme)
+    db_programme = _models.Programme.from_orm(programme)
+    session.add(db_programme)
     session.commit()
-    session.refresh(db_programmme)
-    return db_programmme
+    session.refresh(db_programme)
+    return db_programme
 
 
 @ app.get("/api/programmes/",  tags=["programmes"], response_model=List[_schemas.InfoRead])
@@ -435,3 +436,15 @@ def delete_event(*, session: Session = Depends(_services.get_session), event_id:
     session.delete(event)
     session.commit()
     return {"ok": True}
+
+
+@app.post("/api/events/{event_id}/add_attendee",  tags=["events"])
+def add_attendee(*, session: Session = Depends(_services.get_session), event_id: int, member_id: int):
+    attendee = session.exec(
+        select(_models.Member).where(_models.Member.id == member_id)
+    ).one()
+    event = session.get(_models.Event, event_id)
+    event.members_attended.append(attendee)
+    session.add(event)
+    session.commit()
+    return ({"ok": True})
