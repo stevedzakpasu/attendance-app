@@ -405,7 +405,7 @@ def read_event(
 
 @app.get("/api/events/{event_id}",  tags=["events"], response_model=_schemas.EventReadWithMembers)
 def read_events(*, session: Session = Depends(_services.get_session), event_id: int):
-    event = session.get(_models.Congregation, event_id)
+    event = session.get(_models.Event, event_id)
     if not event:
         raise HTTPException(status_code=404, detail="Event not found")
     return event
