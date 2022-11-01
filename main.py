@@ -68,7 +68,7 @@ def read_members(
 
 
 @app.get("/api/members/{member_id}",  tags=["members"], response_model=_schemas.MemberReadWithEvents)
-def read_hero(*, session: Session = Depends(_services.get_session), member_id: int):
+def read_member(*, session: Session = Depends(_services.get_session), member_id: int):
     member = session.get(_models.Member, member_id)
     if not member:
         raise HTTPException(status_code=404, detail="Member not found")
@@ -347,7 +347,7 @@ def read_committee(
     return committees
 
 
-@app.get("/api/committees/{congregation_id}",  tags=["committees"], response_model=_schemas.InfoRead)
+@app.get("/api/committees/{committee_id}",  tags=["committees"], response_model=_schemas.InfoRead)
 def read_committees(*, session: Session = Depends(_services.get_session), committee_id: int):
     committee = session.get(_models.Congregation, committee_id)
     if not committee:
@@ -444,6 +444,8 @@ def add_attendee(*, session: Session = Depends(_services.get_session), event_id:
         select(_models.Member).where(_models.Member.id == member_id)
     ).one()
     event = session.get(_models.Event, event_id)
+    if attendee in event.members_attended:
+        raise HTTPException(status_code=404, detail="Member already attended")
     event.members_attended.append(attendee)
     session.add(event)
     session.commit()
