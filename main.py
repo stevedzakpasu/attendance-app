@@ -1,4 +1,3 @@
-import re
 from fastapi import FastAPI, Depends, Query, HTTPException
 from typing import List
 import services as _services
@@ -17,24 +16,20 @@ tags_metadata = [
         "description": "Operations with **halls**",
     },
     {
-        "name": "programmes",
-        "description": "Operations with **programmes**",
-    },
-    {
-        "name": "levels",
-        "description": "Operations with **levels**",
-    },
-    {
-        "name": "congregations",
-        "description": "Operations with **congregations**",
-    },
-    {
         "name": "committees",
         "description": "Operations with **committees**",
     },
     {
         "name": "events",
         "description": "Operations with **events**",
+    },
+    {
+        "name": "categories",
+        "description": "Operations with **categories**",
+    },
+    {
+        "name": "semesters",
+        "description": "Operations with **semesters**",
     },
 ]
 
@@ -104,7 +99,7 @@ def delete_member(*, session: Session = Depends(_services.get_session), member_i
 
 @app.post("/api/halls/", tags=["halls"], response_model=_schemas.InfoCreate)
 def create_hall(*, session: Session = Depends(_services.get_session), hall: _schemas.InfoCreate):
-    db_hall = _models.Member.from_orm(hall)
+    db_hall = _models.Hall.from_orm(hall)
     session.add(db_hall)
     session.commit()
     session.refresh(db_hall)
@@ -158,177 +153,9 @@ def delete_hall(*, session: Session = Depends(_services.get_session), hall_id: i
     return {"ok": True}
 
 
-@app.post("/api/programmes/", tags=["programmes"], response_model=_schemas.InfoCreate)
-def create_programme(*, session: Session = Depends(_services.get_session), programme: _schemas.InfoCreate):
-    db_programme = _models.Programme.from_orm(programme)
-    session.add(db_programme)
-    session.commit()
-    session.refresh(db_programme)
-    return db_programme
-
-
-@ app.get("/api/programmes/",  tags=["programmes"], response_model=List[_schemas.InfoRead])
-def read_programmes(
-    *,
-    session: Session = Depends(_services.get_session),
-    offset: int = 0,
-    limit: int = Query(default=100, lte=100),
-):
-    programmes = session.exec(
-        select(_models.Programme).offset(offset).limit(limit)).all()
-    return programmes
-
-
-@app.get("/api/programmes/{programme_id}",  tags=["programmes"], response_model=_schemas.InfoRead)
-def read_programmes(*, session: Session = Depends(_services.get_session), programme_id: int):
-    programme = session.get(_models.Programme, programme_id)
-    if not programme:
-        raise HTTPException(status_code=404, detail="Programme not found")
-    return programme
-
-
-@app.patch("/api/programmes/{programme_id}",  tags=["programmes"], response_model=_schemas.InfoRead)
-def update_program(
-    *, session: Session = Depends(_services.get_session), programme_id: int, programme: _schemas.InfoUpdate
-):
-    db_programme = session.get(_models.Programme, programme_id)
-    if not db_programme:
-        raise HTTPException(status_code=404, detail="Programme not found")
-    programme_data = programme.dict(exclude_unset=True)
-    for key, value in programme_data.items():
-        setattr(db_programme, key, value)
-    session.add(db_programme)
-    session.commit()
-    session.refresh(db_programme)
-    return db_programme
-
-
-@app.delete("/api/programmes/{programme_id}",  tags=["programmes"])
-def delete_programme(*, session: Session = Depends(_services.get_session), programme_id: int):
-
-    programme = session.get(_models.Programme, programme_id)
-    if not programme:
-        raise HTTPException(status_code=404, detail="Programne not found")
-    session.delete(programme)
-    session.commit()
-    return {"ok": True}
-
-
-@app.post("/api/levels/", tags=["levels"], response_model=_schemas.InfoCreate)
-def create_level(*, session: Session = Depends(_services.get_session), level: _schemas.InfoCreate):
-    db_level = _models.Level.from_orm(level)
-    session.add(db_level)
-    session.commit()
-    session.refresh(db_level)
-    return db_level
-
-
-@ app.get("/api/levels/",  tags=["levels"], response_model=List[_schemas.InfoRead])
-def read_level(
-    *,
-    session: Session = Depends(_services.get_session),
-    offset: int = 0,
-    limit: int = Query(default=100, lte=100),
-):
-    levels = session.exec(
-        select(_models.Level).offset(offset).limit(limit)).all()
-    return levels
-
-
-@app.get("/api/levels/{level_id}",  tags=["levels"], response_model=_schemas.InfoRead)
-def read_levels(*, session: Session = Depends(_services.get_session), level_id: int):
-    level = session.get(_models.Level, level_id)
-    if not level:
-        raise HTTPException(status_code=404, detail="Level not found")
-    return level
-
-
-@app.patch("/api/levels/{level_id}",  tags=["levels"], response_model=_schemas.InfoRead)
-def update_level(
-    *, session: Session = Depends(_services.get_session), level_id: int, level: _schemas.InfoUpdate
-):
-    db_level = session.get(_models.Level, level_id)
-    if not db_level:
-        raise HTTPException(status_code=404, detail="Level not found")
-    level_data = level.dict(exclude_unset=True)
-    for key, value in level_data.items():
-        setattr(db_level, key, value)
-    session.add(db_level)
-    session.commit()
-    session.refresh(db_level)
-    return db_level
-
-
-@app.delete("/api/levels/{level_id}",  tags=["levels"])
-def delete_level(*, session: Session = Depends(_services.get_session), level_id: int):
-
-    level = session.get(_models.Programme, level_id)
-    if not level:
-        raise HTTPException(status_code=404, detail="Level not found")
-    session.delete(level)
-    session.commit()
-    return {"ok": True}
-
-
-@app.post("/api/congregations/", tags=["congregations"], response_model=_schemas.InfoCreate)
-def create_congregation(*, session: Session = Depends(_services.get_session), congregation: _schemas.InfoCreate):
-    db_congregation = _models.Congregation.from_orm(congregation)
-    session.add(db_congregation)
-    session.commit()
-    session.refresh(db_congregation)
-    return db_congregation
-
-
-@ app.get("/api/congregations/",  tags=["congregations"], response_model=List[_schemas.InfoRead])
-def read_congregation(
-    *,
-    session: Session = Depends(_services.get_session),
-    offset: int = 0,
-    limit: int = Query(default=100, lte=100),
-):
-    congregations = session.exec(
-        select(_models.Congregation).offset(offset).limit(limit)).all()
-    return congregations
-
-
-@app.get("/api/congregations/{congregation_id}",  tags=["congregations"], response_model=_schemas.InfoRead)
-def read_congregations(*, session: Session = Depends(_services.get_session), congregation_id: int):
-    congregation = session.get(_models.Congregation, congregation_id)
-    if not congregation:
-        raise HTTPException(status_code=404, detail="Congregation not found")
-    return congregation
-
-
-@app.patch("/api/congregations/{congregation_id}",  tags=["congregations"], response_model=_schemas.InfoRead)
-def update_congregation(
-    *, session: Session = Depends(_services.get_session), congregation_id: int, congregation: _schemas.InfoUpdate
-):
-    db_congregation = session.get(_models.Congregation, congregation_id)
-    if not db_congregation:
-        raise HTTPException(status_code=404, detail="Congregation not found")
-    congregation_data = congregation.dict(exclude_unset=True)
-    for key, value in congregation_data.items():
-        setattr(db_congregation, key, value)
-    session.add(db_congregation)
-    session.commit()
-    session.refresh(db_congregation)
-    return db_congregation
-
-
-@app.delete("/api/congregations/{congregation_id}",  tags=["congregations"])
-def delete_congregation(*, session: Session = Depends(_services.get_session), congregation_id: int):
-
-    congregation = session.get(_models.Congregation, congregation_id)
-    if not congregation:
-        raise HTTPException(status_code=404, detail="Congregation not found")
-    session.delete(congregation)
-    session.commit()
-    return {"ok": True}
-
-
 @app.post("/api/committees/", tags=["committees"], response_model=_schemas.InfoCreate)
 def create_committee(*, session: Session = Depends(_services.get_session), committee: _schemas.InfoCreate):
-    db_committee = _models.Congregation.from_orm(committee)
+    db_committee = _models.Committee.from_orm(committee)
     session.add(db_committee)
     session.commit()
     session.refresh(db_committee)
@@ -384,7 +211,7 @@ def delete_committee(*, session: Session = Depends(_services.get_session), commi
 
 @app.post("/api/events/", tags=["events"], response_model=_schemas.EventCreate)
 def create_event(*, session: Session = Depends(_services.get_session), event: _schemas.EventCreate):
-    db_event = _models.Congregation.from_orm(event)
+    db_event = _models.Event.from_orm(event)
     session.add(db_event)
     session.commit()
     session.refresh(db_event)
@@ -450,3 +277,115 @@ def add_attendee(*, session: Session = Depends(_services.get_session), event_id:
     session.add(event)
     session.commit()
     return ({"ok": True})
+
+
+@app.post("/api/categories/", tags=["categories"], response_model=_schemas.InfoCreate)
+def create_category(*, session: Session = Depends(_services.get_session), category: _schemas.InfoCreate):
+    db_category = _models.Category.from_orm(category)
+    session.add(db_category)
+    session.commit()
+    session.refresh(db_category)
+    return db_category
+
+
+@ app.get("/api/categories/",  tags=["categories"], response_model=List[_schemas.InfoRead])
+def read_categories(
+    *,
+    session: Session = Depends(_services.get_session),
+    offset: int = 0,
+    limit: int = Query(default=100, lte=100),
+):
+    categories = session.exec(
+        select(_models.Category).offset(offset).limit(limit)).all()
+    return categories
+
+
+@app.get("/api/categories/{category_id}",  tags=["categories"], response_model=_schemas.InfoRead)
+def read_category(*, session: Session = Depends(_services.get_session), category_id: int):
+    category = session.get(_models.Category, category_id)
+    if not category:
+        raise HTTPException(status_code=404, detail="Category not found")
+    return category
+
+
+@app.patch("/api/categories/{category_id}",  tags=["categories"], response_model=_schemas.InfoRead)
+def update_category(
+    *, session: Session = Depends(_services.get_session), category_id: int, category: _schemas.InfoUpdate
+):
+    db_category = session.get(_models.Category, category_id)
+    if not db_category:
+        raise HTTPException(status_code=404, detail="Category not found")
+    category_data = category.dict(exclude_unset=True)
+    for key, value in category_data.items():
+        setattr(db_category, key, value)
+    session.add(db_category)
+    session.commit()
+    session.refresh(db_category)
+    return db_category
+
+
+@app.delete("/api/categories/{categoty_id}",  tags=["categories"])
+def delete_category(*, session: Session = Depends(_services.get_session), category_id: int):
+
+    category = session.get(_models.Category, category_id)
+    if not category:
+        raise HTTPException(status_code=404, detail="Category not found")
+    session.delete(category)
+    session.commit()
+    return {"ok": True}
+
+
+@app.post("/api/semesters/", tags=["semesters"], response_model=_schemas.InfoCreate)
+def create_semester(*, session: Session = Depends(_services.get_session), semester: _schemas.InfoCreate):
+    db_semester = _models.Semester.from_orm(semester)
+    session.add(db_semester)
+    session.commit()
+    session.refresh(db_semester)
+    return db_semester
+
+
+@ app.get("/api/semesters/",  tags=["semesters"], response_model=List[_schemas.InfoRead])
+def read_semesters(
+    *,
+    session: Session = Depends(_services.get_session),
+    offset: int = 0,
+    limit: int = Query(default=100, lte=100),
+):
+    semesters = session.exec(
+        select(_models.Semester).offset(offset).limit(limit)).all()
+    return semesters
+
+
+@app.get("/api/semesters/{semester_id}",  tags=["semesters"], response_model=_schemas.InfoRead)
+def read_semester(*, session: Session = Depends(_services.get_session), semester_id: int):
+    semester = session.get(_models.Semester, semester_id)
+    if not semester:
+        raise HTTPException(status_code=404, detail="Semester not found")
+    return semester
+
+
+@app.patch("/api/semesters/{semester_id}",  tags=["semesters"], response_model=_schemas.InfoRead)
+def update_semester(
+    *, session: Session = Depends(_services.get_session), semester_id: int, semester: _schemas.InfoUpdate
+):
+    db_semester = session.get(_models.Semester, semester_id)
+    if not db_semester:
+        raise HTTPException(status_code=404, detail="Semester not found")
+    semester_data = semester.dict(exclude_unset=True)
+    for key, value in semester_data.items():
+        setattr(db_semester, key, value)
+    session.add(db_semester)
+    session.commit()
+    session.refresh(db_semester)
+    return db_semester
+
+
+@app.delete("/api/semesters/{semester_id}",  tags=["semesters"])
+def delete_semester(*, session: Session = Depends(_services.get_session), semester_id: int):
+
+    semester = session.get(_models.Semester, semester_id)
+    if not semester:
+        raise HTTPException(status_code=404, detail="Semester not found")
+    session.delete(semester)
+    session.commit()
+    return {"ok": True}

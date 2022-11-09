@@ -1,30 +1,27 @@
 from typing import List, Optional
 from sqlmodel import Field, Relationship, SQLModel
+import datetime
+from sqlalchemy import Column, String
 
 
 class Hall(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
-    name: str
+    name: str = Field(sa_column=Column("name", String, unique=True))
 
 
-class Programme(SQLModel, table=True):
+class Semester(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
-    name: str
+    name: str = Field(sa_column=Column("name", String, unique=True))
 
 
-class Level(SQLModel, table=True):
+class Category(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
-    name: str
-
-
-class Congregation(SQLModel, table=True):
-    id: Optional[int] = Field(default=None, primary_key=True)
-    name: str
+    name: str = Field(sa_column=Column("name", String, unique=True))
 
 
 class Committee(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
-    name: str
+    name: str = Field(sa_column=Column("name", String, unique=True))
 
 
 class MemberEventLink(SQLModel, table=True):
@@ -38,16 +35,17 @@ class MemberEventLink(SQLModel, table=True):
 
 class Member(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
-    name: str
+    first_name: str
+    other_names: Optional[str]
+    last_name: str
+    sex: str
     phone_number: str
     hall: Optional[str] = Field(default=None, foreign_key="hall.name")
     room_number: Optional[str]
-    programme: Optional[str] = Field(
-        default=None, foreign_key="programme.name")
-    level: Optional[str] = Field(default=None, foreign_key="level.name")
-    DOB: str
-    congregation: str = Field(
-        default=None, foreign_key="congregation.name")
+    programme: Optional[str]
+    level: Optional[str]
+    date_of_birth: datetime.date
+    congregation: Optional[str]
     committee: Optional[str] = Field(
         default=None, foreign_key="committee.name")
     events_attended: List["Event"] = Relationship(
@@ -59,3 +57,9 @@ class Event(SQLModel, table=True):
     name: str
     members_attended: List["Member"] = Relationship(
         back_populates="events_attended", link_model=MemberEventLink)
+    semester: str = Field(
+        default=None, foreign_key="semester.name")
+    category: str = Field(
+        default=None, foreign_key="category.name")
+    created_on: datetime.date = Field(
+        default_factory=datetime.date.today, nullable=False)
