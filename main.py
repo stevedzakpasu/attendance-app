@@ -62,6 +62,18 @@ def read_members(
     return members
 
 
+@ app.get("/api/members_cards/",  tags=["members"], response_model=List[_schemas.MemberRead])
+def read_members(
+    *,
+    session: Session = Depends(_services.get_session),
+    offset: int = 0,
+    limit: int = Query(default=100, lte=100),
+):
+    members = session.exec(
+        select(_models.Member).offset(offset).limit(limit)).all()
+    return members
+
+
 @app.get("/api/members/{member_id}",  tags=["members"], response_model=_schemas.MemberReadWithEvents)
 def read_member(*, session: Session = Depends(_services.get_session), member_id: int):
     member = session.get(_models.Member, member_id)
