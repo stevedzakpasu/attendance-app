@@ -9,6 +9,7 @@ from passlib.context import CryptContext
 from datetime import timedelta
 from fastapi import Depends, FastAPI, HTTPException, status, Request
 import time
+from fastapi.middleware.cors import CORSMiddleware
 tags_metadata = [
     {
         "name": "members",
@@ -45,6 +46,16 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 app = FastAPI(openapi_tags=tags_metadata)
+
+origins = ["*"]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 SECRET_KEY = "a924c4a7c5e0019a69c15412b4f01dd451023fce957a606223ed390fdba1a809"
