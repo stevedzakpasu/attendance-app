@@ -1,6 +1,14 @@
 from dotenv import load_dotenv
 import os
 from sqlmodel import create_engine, Session
+from sqlalchemy.exc import SAWarning
+from sqlmodel.sql.expression import Select, SelectOfScalar
+import warnings
+
+
+warnings.filterwarnings("ignore", category=SAWarning)
+SelectOfScalar.inherit_cache = True
+Select.inherit_cache = True
 
 
 # load_dotenv()

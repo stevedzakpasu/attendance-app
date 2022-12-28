@@ -1,4 +1,5 @@
 from typing import List, Optional
+from pydantic import EmailStr
 from sqlmodel import Field, Relationship, SQLModel
 import datetime
 from sqlalchemy import Column, String
@@ -50,6 +51,10 @@ class Member(SQLModel, table=True):
         default=None, foreign_key="committee.name")
     events_attended: List["Event"] = Relationship(
         back_populates="members_attended", link_model=MemberEventLink)
+    user: Optional["User"] = Relationship(
+        sa_relationship_kwargs={'uselist': False},
+        back_populates="member"
+    )
 
 
 class Event(SQLModel, table=True):
@@ -63,3 +68,17 @@ class Event(SQLModel, table=True):
         default=None, foreign_key="category.name")
     created_on: datetime.date = Field(
         default_factory=datetime.date.today, nullable=False)
+
+
+class User(SQLModel, table=True):
+    username: str = Field(default=None, primary_key=True, index=True,
+                          nullable=False,)
+    email: EmailStr
+    full_name: Optional[str] = ""
+    hashed_password: Optional[str] = ""
+    disabled: Optional[bool] = False
+    is_admin: Optional[bool] = False
+    member_id: Optional[int] = Field(
+        default=None, foreign_key="member.id")
+    member: Optional["Member"] = Relationship(
+        back_populates="user")

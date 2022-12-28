@@ -1,6 +1,7 @@
 from typing import List, Optional
 from sqlmodel import SQLModel
 import datetime
+from pydantic import EmailStr
 
 
 class MemberCreate(SQLModel):
@@ -72,3 +73,48 @@ class InfoRead(InfoCreate):
 
 class InfoUpdate(SQLModel):
     name: Optional[str] = None
+
+
+class User(SQLModel):
+    username: str
+    email: str | None = None
+    full_name: str | None = None
+    disabled: bool | None = None
+
+
+class UserInDB(User):
+    hashed_password: str
+
+
+class Token(SQLModel):
+    access_token: str
+    token_type: str
+
+
+class TokenData(SQLModel):
+    username: str | None = None
+
+
+class UserOutSchema(SQLModel):
+    username: str
+    email: EmailStr
+    full_name: str
+    disabled: bool
+    is_admin: bool
+    member_id: int | None
+
+
+class UserInSchema(SQLModel):
+    username: str
+    email: EmailStr
+    full_name: str
+    password: str
+
+
+class Token(SQLModel):
+    access_token: str
+    token_type: str
+
+
+class TokenData(SQLModel):
+    username: str | None = None
