@@ -61,9 +61,9 @@ async def add_process_time_header(request: Request, call_next):
     return response
 
 
-# @app.on_event("startup")
-# def on_startup():
-#     _services.create_db_and_tables()
+@app.on_event("startup")
+def on_startup():
+    _services.create_db_and_tables()
 
 
 @app.post("/api/members/", tags=["members"], response_model=_schemas.MemberCreate, dependencies=[Depends(_services.get_current_user)])
