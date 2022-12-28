@@ -9,14 +9,10 @@ from jose import JWTError, jwt
 import models
 from sqlmodel import select
 from dotenv import load_dotenv
-import os
-load_dotenv()
 
-
-SECRET = os.getenv('SECRET_KEY')
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-SECRET_KEY = SECRET
+SECRET_KEY = "a924c4a7c5e0019a69c15412b4f01dd451023fce957a606223ed390fdba1a809"
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 120
 
