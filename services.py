@@ -8,7 +8,6 @@ from fastapi import Depends, HTTPException, status
 from jose import JWTError, jwt
 import models
 from sqlmodel import select
-from dotenv import load_dotenv
 
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -24,7 +23,11 @@ def create_db_and_tables():
 
 
 def get_session():
-    return Session(engine)
+    session = Session(engine)
+    try:
+        yield session
+    finally:
+        session.close()
 
 
 def verify_password(plain_password, hashed_password):
@@ -36,30 +39,30 @@ def get_password_hash(password):
 
 
 def get_user(username: str):
-    with get_session() as session:
-        user = session.exec(
-            select(models.User).where(models.User.username == username)
-        ).first()
-        if user:
-            print(user.username)
-            return user
-        else:
-            print("No user found")
+    session = get_session()
+    user = next(session).exec(
+        select(models.User).where(models.User.username == username)
+    ).first()
+    if user:
+        print(user.username)
+        return user
+    else:
+        print("No user found")
 
 
 def check_user(userIn: schemas.UserInSchema):
-    with get_session() as session:
+    session = get_session()
+    user_in_db = next(session).exec(
+        select(models.User).where(models.User.username == userIn.username)
+    ).first()
+    if user_in_db:
+        return user_in_db
+    else:
         user_in_db = session.exec(
-            select(models.User).where(models.User.username == userIn.username)
+            select(models.User).where(models.User == userIn.email)
         ).first()
         if user_in_db:
             return user_in_db
-        else:
-            user_in_db = session.exec(
-                select(models.User).where(models.User == userIn.email)
-            ).first()
-            if user_in_db:
-                return user_in_db
 
 
 def authenticate_user(username: str, password: str):
