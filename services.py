@@ -68,7 +68,7 @@ def check_user(userIn: schemas.UserInSchema):
 def create_admin():
     with Session(engine) as session:
         admin = session.exec(
-            select(models.User).where(models.User.is_admin == True)
+            select(models.User).where(models.User.username == "admin")
         ).first()
         if not admin:
             new_user = models.User(
