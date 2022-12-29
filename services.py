@@ -66,20 +66,20 @@ def check_user(userIn: schemas.UserInSchema):
 
 
 def create_admin():
-    session = get_session()
-    admin = next(session).exec(
-        select(models.User).where(models.User.is_admin == True)
-    ).first()
-    if not admin:
-        new_user = models.User(
-            username="admin",
-            email="admin@gmail.com",
-            full_name="Admin",
-            is_admin=True,
-            hashed_password=get_password_hash("COCAdmin")
-        )
-        next(session).add(new_user)
-        next(session).commit()
+    with Session(engine) as session:
+        admin = session.exec(
+            select(models.User).where(models.User.is_admin == True)
+        ).first()
+        if not admin:
+            new_user = models.User(
+                username="admin",
+                email="admin@gmail.com",
+                full_name="Admin",
+                is_admin=True,
+                hashed_password=get_password_hash("COCAdmin")
+            )
+            session.add(new_user)
+            session.commit()
 
 
 def authenticate_user(username: str, password: str):
