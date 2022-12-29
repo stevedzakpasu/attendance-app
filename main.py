@@ -28,8 +28,8 @@ tags_metadata = [
         "description": "Operations with **events**",
     },
     {
-        "name": "categories",
-        "description": "Operations with **categories**",
+        "name": "events categories",
+        "description": "Operations with **events categories**",
     },
     {
         "name": "semesters",
