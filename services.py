@@ -78,8 +78,8 @@ def create_admin():
             is_admin=True,
             hashed_password=get_password_hash("COCAdmin")
         )
-        session.add(new_user)
-        session.commit()
+        next(session).add(new_user)
+        next(session).commit()
 
 
 def authenticate_user(username: str, password: str):
