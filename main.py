@@ -72,9 +72,9 @@ async def add_process_time_header(request: Request, call_next):
     return response
 
 
-# @app.on_event("startup")
-# def on_startup():
-#     _services.create_db_and_tables()
+@app.on_event("startup")
+def on_startup():
+    _services.create_admin()
 
 
 @app.post("/api/members/", tags=["members"], response_model=_schemas.MemberCreate, dependencies=[Depends(_services.get_current_user)])
@@ -154,7 +154,7 @@ def delete_member(*, session: Session = Depends(_services.get_session), member_i
 
     session.delete(member)
     session.commit()
-    return {"ok": True}
+    return {"message": "Member successfully deleted"}
 
 
 @app.post("/api/halls/", tags=["halls"], response_model=_schemas.InfoCreate, dependencies=[Depends(_services.get_current_admin_user)])
@@ -210,7 +210,7 @@ def delete_hall(*, session: Session = Depends(_services.get_session), hall_id: i
         raise HTTPException(status_code=404, detail="Hall not found")
     session.delete(hall)
     session.commit()
-    return {"ok": True}
+    return {"message": "Hall successfully deleted"}
 
 
 @app.post("/api/committees/", tags=["committees"], response_model=_schemas.InfoCreate,  dependencies=[Depends(_services.get_current_admin_user)])
@@ -266,7 +266,7 @@ def delete_committee(*, session: Session = Depends(_services.get_session), commi
         raise HTTPException(status_code=404, detail="Committee not found")
     session.delete(committee)
     session.commit()
-    return {"ok": True}
+    return {"message": "Committee successfully deleted"}
 
 
 @app.post("/api/events/", tags=["events"], response_model=_schemas.EventCreate, dependencies=[Depends(_services.get_current_admin_user)])
@@ -322,7 +322,7 @@ def delete_event(*, session: Session = Depends(_services.get_session), event_id:
         raise HTTPException(status_code=404, detail="Event not found")
     session.delete(event)
     session.commit()
-    return {"ok": True}
+    return {"message": "Event successfully deleted"}
 
 
 @app.post("/api/events/{event_id}/add_attendee",  tags=["events"], dependencies=[Depends(_services.get_current_admin_user)])
@@ -336,7 +336,7 @@ def add_attendee(*, session: Session = Depends(_services.get_session), event_id:
     event.members_attended.append(attendee)
     session.add(event)
     session.commit()
-    return ({"ok": True})
+    return {"message": "Member successfully marked present"}
 
 
 @app.post("/api/categories/", tags=["categories"], response_model=_schemas.InfoCreate, dependencies=[Depends(_services.get_current_admin_user)])
@@ -448,7 +448,7 @@ def delete_semester(*, session: Session = Depends(_services.get_session), semest
         raise HTTPException(status_code=404, detail="Semester not found")
     session.delete(semester)
     session.commit()
-    return {"ok": True}
+    return {"message": "Semester successfully deleted"}
 
 
 @app.post("/token", response_model=_schemas.Token, tags=["users"])
@@ -516,4 +516,4 @@ def reset_password(*, session: Session = Depends(_services.get_session), usernam
     session.add(db_user)
     session.commit()
     session.refresh(db_user)
-    return {"message": "password succesfully reset"}
+    return {"message": "Password succesfully reset"}
