@@ -1,8 +1,8 @@
 """initial migration
 
-Revision ID: 1c99ab42d8ed
+Revision ID: e8faa782fa11
 Revises: 
-Create Date: 2022-12-29 10:54:12.725246
+Create Date: 2022-12-29 11:23:23.924185
 
 """
 from alembic import op
@@ -11,7 +11,7 @@ import sqlmodel
 
 
 # revision identifiers, used by Alembic.
-revision = '1c99ab42d8ed'
+revision = 'e8faa782fa11'
 down_revision = None
 branch_labels = None
 depends_on = None
