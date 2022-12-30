@@ -339,7 +339,7 @@ def add_attendee(*, session: Session = Depends(_services.get_session), event_id:
     return {"message": "Member successfully marked present"}
 
 
-@app.post("/api/categories/", tags=["categories"], response_model=_schemas.InfoCreate, dependencies=[Depends(_services.get_current_admin_user)])
+@app.post("/api/categories/", tags=["events categories"], response_model=_schemas.InfoCreate, dependencies=[Depends(_services.get_current_admin_user)])
 def create_category(*, session: Session = Depends(_services.get_session), category: _schemas.InfoCreate):
     db_category = _models.Category.from_orm(category)
     session.add(db_category)
@@ -348,7 +348,7 @@ def create_category(*, session: Session = Depends(_services.get_session), catego
     return db_category
 
 
-@ app.get("/api/categories/",  tags=["categories"], response_model=List[_schemas.InfoRead], dependencies=[Depends(_services.get_current_user)])
+@ app.get("/api/categories/",  tags=["events categories"], response_model=List[_schemas.InfoRead], dependencies=[Depends(_services.get_current_user)])
 def read_categories(
     *,
     session: Session = Depends(_services.get_session),
@@ -360,7 +360,7 @@ def read_categories(
     return categories
 
 
-@app.get("/api/categories/{category_id}",  tags=["categories"], response_model=_schemas.InfoRead, dependencies=[Depends(_services.get_current_admin_user)])
+@app.get("/api/categories/{category_id}",  tags=["events categories"], response_model=_schemas.InfoRead, dependencies=[Depends(_services.get_current_admin_user)])
 def read_category(*, session: Session = Depends(_services.get_session), category_id: int):
     category = session.get(_models.Category, category_id)
     if not category:
@@ -368,7 +368,7 @@ def read_category(*, session: Session = Depends(_services.get_session), category
     return category
 
 
-@app.patch("/api/categories/{category_id}",  tags=["categories"], response_model=_schemas.InfoRead, dependencies=[Depends(_services.get_current_admin_user)])
+@app.patch("/api/categories/{category_id}",  tags=["events categories"], response_model=_schemas.InfoRead, dependencies=[Depends(_services.get_current_admin_user)])
 def update_category(
     *, session: Session = Depends(_services.get_session), category_id: int, category: _schemas.InfoUpdate
 ):
@@ -384,7 +384,7 @@ def update_category(
     return db_category
 
 
-@app.delete("/api/categories/{categoty_id}",  tags=["categories"], dependencies=[Depends(_services.get_current_admin_user)])
+@app.delete("/api/categories/{categoty_id}",  tags=["events categories"], dependencies=[Depends(_services.get_current_admin_user)])
 def delete_category(*, session: Session = Depends(_services.get_session), category_id: int):
 
     category = session.get(_models.Category, category_id)
