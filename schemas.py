@@ -102,7 +102,7 @@ class UserOutSchema(SQLModel):
     disabled: bool
     is_admin: bool
     member_id: int | None
-    member: MemberCreate | None
+    member: MemberRead | None
 
 
 class UserInSchema(SQLModel):
