@@ -125,6 +125,18 @@ def read_member(*, session: Session = Depends(_services.get_session), member_id:
     return member
 
 
+@app.get("/api/members_cards/{member_id}",  tags=["members"], response_model=_schemas.MemberRead, dependencies=[Depends(_services.get_current_user)])
+def read_member_without_events(*, session: Session = Depends(_services.get_session), member_id: int, user: _models.User = Depends(_services.get_current_user)):
+    member = session.get(_models.Member, member_id)
+    if not member:
+        raise HTTPException(status_code=404, detail="Member not found")
+    db_user = session.get(_models.User, user.username)
+    if member.id != db_user.member_id and not db_user.is_admin:
+        raise HTTPException(
+            status_code=400, detail="You don't have rights to perform this operation")
+    return member
+
+
 @app.patch("/api/members/{member_id}",  tags=["members"], response_model=_schemas.MemberReadWithEvents, dependencies=[Depends(_services.get_current_user)])
 def update_member(
     *, session: Session = Depends(_services.get_session), member_id: int, member: _schemas.MemberUpdate, user: _models.User = Depends(_services.get_current_user)
