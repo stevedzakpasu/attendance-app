@@ -529,3 +529,14 @@ def reset_password(*, session: Session = Depends(_services.get_session), usernam
     session.commit()
     session.refresh(db_user)
     return {"message": "Password succesfully reset"}
+
+
+@app.delete("/api/users/{username}",  tags=["users"], dependencies=[Depends(_services.get_current_admin_user)])
+def delete_user(*, session: Session = Depends(_services.get_session), username: str):
+
+    user = session.get(_models.User, username)
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    session.delete(user)
+    session.commit()
+    return {"message": "User succesfully deleted"}
