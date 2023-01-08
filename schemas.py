@@ -9,14 +9,16 @@ class MemberCreate(SQLModel):
     other_names: Optional[str]
     last_name: str
     sex: str
+    date_of_birth: datetime.date
     phone_number: str
     hall: Optional[str]
     room_number: Optional[str]
     programme: Optional[str]
     level: Optional[str]
-    date_of_birth: datetime.date
     congregation: str
-    committee: Optional[str]
+    committee_1: Optional[str]
+    committee_2: Optional[str]
+    committee_3: Optional[str]
 
 
 class MemberUpdate(SQLModel):
@@ -31,7 +33,9 @@ class MemberUpdate(SQLModel):
     level: Optional[str] = None
     date_of_birth: Optional[datetime.date] = None
     congregation: Optional[str] = None
-    committee: Optional[str] = None
+    committee_1: Optional[str] = None
+    committee_2: Optional[str] = None
+    committee_3: Optional[str] = None
 
 
 class EventCreate(SQLModel):

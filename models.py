@@ -40,14 +40,18 @@ class Member(SQLModel, table=True):
     other_names: Optional[str]
     last_name: str
     sex: str
+    date_of_birth: datetime.date
     phone_number: str
     hall: Optional[str] = Field(default=None, foreign_key="hall.name")
     room_number: Optional[str]
     programme: Optional[str]
     level: Optional[str]
-    date_of_birth: datetime.date
     congregation: Optional[str]
-    committee: Optional[str] = Field(
+    committee_1: Optional[str] = Field(
+        default=None, foreign_key="committee.name")
+    committee_2: Optional[str] = Field(
+        default=None, foreign_key="committee.name")
+    committee_3: Optional[str] = Field(
         default=None, foreign_key="committee.name")
     events_attended: List["Event"] = Relationship(
         back_populates="members_attended", link_model=MemberEventLink)
