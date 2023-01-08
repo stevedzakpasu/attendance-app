@@ -19,6 +19,9 @@ class MemberCreate(SQLModel):
     committee_1: Optional[str]
     committee_2: Optional[str]
     committee_3: Optional[str]
+    emergency_contact_name: Optional[str]
+    emergency_contact_relationship: Optional[str]
+    emergency_contact_phone_number: Optional[str]
 
 
 class MemberUpdate(SQLModel):
@@ -36,6 +39,9 @@ class MemberUpdate(SQLModel):
     committee_1: Optional[str] = None
     committee_2: Optional[str] = None
     committee_3: Optional[str] = None
+    emergency_contact_name: Optional[str] = None
+    emergency_contact_relationship: Optional[str] = None
+    emergency_contact_phone_number: Optional[str] = None
 
 
 class EventCreate(SQLModel):

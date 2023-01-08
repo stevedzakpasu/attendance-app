@@ -53,6 +53,9 @@ class Member(SQLModel, table=True):
         default=None, foreign_key="committee.name")
     committee_3: Optional[str] = Field(
         default=None, foreign_key="committee.name")
+    emergency_contact_name: Optional[str]
+    emergency_contact_relationship: Optional[str]
+    emergency_contact_phone_number: Optional[str]
     events_attended: List["Event"] = Relationship(
         back_populates="members_attended", link_model=MemberEventLink)
     user: Optional["User"] = Relationship(
