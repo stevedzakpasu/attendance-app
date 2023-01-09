@@ -47,11 +47,11 @@ class Member(SQLModel, table=True):
     programme: Optional[str]
     level: Optional[str]
     congregation: Optional[str]
-    committee_1: Optional[str] = Field(
+    committee_1: Optional[str] | None = Field(
         default=None, foreign_key="committee.name")
-    committee_2: Optional[str] = Field(
+    committee_2: Optional[str] | None = Field(
         default=None, foreign_key="committee.name")
-    committee_3: Optional[str] = Field(
+    committee_3: Optional[str] | None = Field(
         default=None, foreign_key="committee.name")
     emergency_contact_name: Optional[str]
     emergency_contact_relationship: Optional[str]

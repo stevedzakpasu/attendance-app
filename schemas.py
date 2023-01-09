@@ -16,9 +16,9 @@ class MemberCreate(SQLModel):
     programme: Optional[str]
     level: Optional[str]
     congregation: str
-    committee_1: Optional[str]
-    committee_2: Optional[str]
-    committee_3: Optional[str]
+    committee_1: Optional[str] | None
+    committee_2: Optional[str] | None
+    committee_3: Optional[str] | None
     emergency_contact_name: Optional[str]
     emergency_contact_relationship: Optional[str]
     emergency_contact_phone_number: Optional[str]
@@ -36,9 +36,9 @@ class MemberUpdate(SQLModel):
     level: Optional[str] = None
     date_of_birth: Optional[datetime.date] = None
     congregation: Optional[str] = None
-    committee_1: Optional[str] = None
-    committee_2: Optional[str] = None
-    committee_3: Optional[str] = None
+    committee_1: Optional[str] | None = None
+    committee_2: Optional[str] | None = None
+    committee_3: Optional[str] | None = None
     emergency_contact_name: Optional[str] = None
     emergency_contact_relationship: Optional[str] = None
     emergency_contact_phone_number: Optional[str] = None
