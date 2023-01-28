@@ -94,7 +94,7 @@ def read_members(
     *,
     session: Session = Depends(_services.get_session),
     offset: int = 0,
-    limit: int = Query(default=100, lte=1000)
+    limit: int = Query(default=1000, lte=1000)
 ):
     members = session.exec(
         select(_models.Member).offset(offset).limit(limit)).all()
@@ -106,7 +106,7 @@ def read_members(
     *,
     session: Session = Depends(_services.get_session),
     offset: int = 0,
-    limit: int = Query(default=100, lte=1000)
+    limit: int = Query(default=1000, lte=1000)
 ):
     members = session.exec(
         select(_models.Member).offset(offset).limit(limit)).all()
