@@ -512,7 +512,7 @@ async def read_users_me(current_user: _models.User = Depends(_services.get_curre
 
 @app.get("/users/all/",  tags=["users"], response_model=List[_schemas.UserOutSchema], dependencies=[Depends(_services.get_current_admin_user)])
 async def read_all_users(session: Session = Depends(_services.get_session),  offset: int = 0,
-                         limit: int = Query(default=100, lte=100)):
+                         limit: int = Query(default=1000, lte=1000)):
     users = session.exec(
         select(_models.User).offset(offset).limit(limit)).all()
     return users
@@ -528,7 +528,7 @@ def reset_password(*, session: Session = Depends(_services.get_session), usernam
     session.add(db_user)
     session.commit()
     session.refresh(db_user)
-    return {"message": "Password succesfully reset"}
+    return {"message": "Password successfully reset"}
 
 
 @app.delete("/api/users/{username}",  tags=["users"], dependencies=[Depends(_services.get_current_admin_user)])
@@ -539,4 +539,4 @@ def delete_user(*, session: Session = Depends(_services.get_session), username: 
         raise HTTPException(status_code=404, detail="User not found")
     session.delete(user)
     session.commit()
-    return {"message": "User succesfully deleted"}
+    return {"message": "User successfully deleted"}
