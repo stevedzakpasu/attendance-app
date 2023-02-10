@@ -518,7 +518,7 @@ async def read_all_users(session: Session = Depends(_services.get_session),  off
     return users
 
 
-@app.get("/api/users/{username}",  tags=["committees"], response_model=_schemas.UserOutSchema, dependencies=[Depends(_services.get_current_admin_user)])
+@app.get("/api/users/{username}",  tags=["users"], response_model=_schemas.UserOutSchema, dependencies=[Depends(_services.get_current_admin_user)])
 def read_user(*, session: Session = Depends(_services.get_session), username: str):
     user = session.get(_models.User, username)
     if not user:
