@@ -518,6 +518,16 @@ async def read_all_users(session: Session = Depends(_services.get_session),  off
     return users
 
 
+@app.get("/users/not_registered/",  tags=["users"], response_model=List[_schemas.UserOutSchema], dependencies=[Depends(_services.get_current_admin_user)])
+async def read_all_users_not_registered(session: Session = Depends(_services.get_session),  offset: int = 0,
+                                        limit: int = Query(default=1000, lte=1000)):
+    users = session.exec(
+        select(_models.User).where(_models.User.member == None).offset(offset).limit(limit)).all()
+    if not users:
+        raise HTTPException(status_code=404, detail="No user not found")
+    return users
+
+
 @app.get("/api/users/{username}",  tags=["users"], response_model=_schemas.UserOutSchema, dependencies=[Depends(_services.get_current_admin_user)])
 def read_user(*, session: Session = Depends(_services.get_session), username: str):
     user = session.get(_models.User, username)
