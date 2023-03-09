@@ -105,10 +105,13 @@ class TokenData(SQLModel):
     username: str | None = None
 
 
-class UserOutSchema(SQLModel):
+class UserOutSchemaPublic(SQLModel):
     username: str
     email: EmailStr
     full_name: str
+
+
+class UserOutSchema(UserOutSchemaPublic):
     disabled: bool
     is_admin: bool
     member_id: int | None

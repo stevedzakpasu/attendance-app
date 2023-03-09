@@ -16,6 +16,13 @@ tags_metadata = [
         "description": "Operations with **members**",
     },
     {
+        "name": "users",
+        "description": "Operations with **users**",
+    }, {
+        "name": "events",
+        "description": "Operations with **events**",
+    },
+    {
         "name": "halls",
         "description": "Operations with **halls**",
     },
@@ -23,10 +30,7 @@ tags_metadata = [
         "name": "committees",
         "description": "Operations with **committees**",
     },
-    {
-        "name": "events",
-        "description": "Operations with **events**",
-    },
+
     {
         "name": "events categories",
         "description": "Operations with **events categories**",
@@ -34,10 +38,8 @@ tags_metadata = [
     {
         "name": "semesters",
         "description": "Operations with **semesters**",
-    },    {
-        "name": "users",
-        "description": "Operations with **users**",
-    },
+    }
+
 ]
 
 
@@ -511,6 +513,14 @@ async def read_users_me(current_user: _models.User = Depends(_services.get_curre
 
 
 @app.get("/users/all/",  tags=["users"], response_model=List[_schemas.UserOutSchema], dependencies=[Depends(_services.get_current_admin_user)])
+async def read_all_users(session: Session = Depends(_services.get_session),  offset: int = 0,
+                         limit: int = Query(default=1000, lte=1000)):
+    users = session.exec(
+        select(_models.User).offset(offset).limit(limit)).all()
+    return users
+
+
+@app.get("/users/public/all/",  tags=["users"], response_model=List[_schemas.UserOutSchemaPublic])
 async def read_all_users(session: Session = Depends(_services.get_session),  offset: int = 0,
                          limit: int = Query(default=1000, lte=1000)):
     users = session.exec(
