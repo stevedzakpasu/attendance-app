@@ -65,6 +65,15 @@ class MemberRead(MemberCreate):
     id: int
 
 
+class MemberReadPublic(SQLModel):
+    id: int
+    first_name: str
+    other_names: Optional[str]
+    last_name: str
+    date_of_birth: datetime.date
+    emergency_contact_name: Optional[str]
+
+
 class MemberReadWithEvents(MemberRead):
     events_attended: List[EventRead] = []
 
@@ -109,9 +118,13 @@ class UserOutSchemaPublic(SQLModel):
     username: str
     email: EmailStr
     full_name: str
+    member: MemberReadPublic | None
 
 
-class UserOutSchema(UserOutSchemaPublic):
+class UserOutSchema(SQLModel):
+    username: str
+    email: EmailStr
+    full_name: str
     disabled: bool
     is_admin: bool
     member_id: int | None
